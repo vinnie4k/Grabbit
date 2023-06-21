@@ -1,0 +1,8 @@
+*.DS_Store
+*.build/
+*xcshareddata/
+*xcuserdata/
+## Build generated
+*build/
+*GoogleService-Info.plist
+*Secrets.plist
