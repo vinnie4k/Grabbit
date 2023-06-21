@@ -86,7 +86,9 @@ struct SettingsView: View {
     
     private var aboutCell: some View {
         Button {
-            // TODO: Open About Link
+            if let url = URL(string: Secrets.aboutLink) {
+                openURL(url)
+            }
         } label: {
             HStack(spacing: 16) {
                 Image.grabbit.info
@@ -112,7 +114,9 @@ struct SettingsView: View {
     
     private var feedbackCell: some View {
         Button {
-            // TODO: Open Feedback Link
+            if let url = URL(string: Secrets.feedbackForm) {
+                openURL(url)
+            }
         } label: {
             HStack(spacing: 16) {
                 Image.grabbit.flag

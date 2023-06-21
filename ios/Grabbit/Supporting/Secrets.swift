@@ -9,7 +9,9 @@ import Foundation
 
 struct Secrets {
     
+    static let aboutLink = Secrets.keyDict["about-link"] as! String
     static let coursesEndpoint = Secrets.keyDict["courses-endpoint"] as! String
+    static let feedbackForm = Secrets.keyDict["feedback-form"] as! String
     static let studentCenterLink = Secrets.keyDict["student-center-link"] as! String
     static let userEndpoint = Secrets.keyDict["user-endpoint"] as! String
     

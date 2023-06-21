@@ -14,6 +14,7 @@ class AuthenticationViewModel: ObservableObject {
         
     // MARK: - Properties
     
+    @Published var isAuthenticating: Bool = false
     @Published var state: SignInState = .signedIn
     
     func signInWithGoogle() {
@@ -28,6 +29,7 @@ class AuthenticationViewModel: ObservableObject {
         GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController) { [unowned self] result, error in
             guard error == nil else {
                 print(error!.localizedDescription)
+                isAuthenticating = false
                 return
             }
             
@@ -44,6 +46,7 @@ class AuthenticationViewModel: ObservableObject {
             Auth.auth().signIn(with: credential) { [unowned self] user, error in
                 if let error = error {
                     state = .signedOut
+                    isAuthenticating = false
                     print("Error in AuthenticationViewModel.signInWithGoogle: \(error.localizedDescription)")
                 } else {
                     Task {
@@ -56,7 +59,10 @@ class AuthenticationViewModel: ObservableObject {
     
     func authenticateUser() async -> Result<User, Error> {
         guard let googleUser = Auth.auth().currentUser,
-              let email = googleUser.email else { return .failure(CustomError.authError) }
+              let email = googleUser.email else {
+            isAuthenticating = false
+            return .failure(CustomError.authError)
+        }
         
         let userId = googleUser.uid
         let deviceId = UserDefaults.standard.object(forKey: "deviceId") as? String
@@ -69,12 +75,14 @@ class AuthenticationViewModel: ObservableObject {
             UserDefaults.standard.set(user.id, forKey: "userId")
             DispatchQueue.main.async {
                 self.state = .signedIn
+                self.isAuthenticating = false
             }
             return .success(user)
         case .failure(let error):
             print("Error in AuthenticationViewModel.authenticateUser: \(error.localizedDescription)")
             DispatchQueue.main.async {
                 self.state = .signedOut
+                self.isAuthenticating = false
             }
             return .failure(error)
         }

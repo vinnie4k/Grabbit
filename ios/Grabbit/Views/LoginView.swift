@@ -23,7 +23,7 @@ struct LoginView: View {
     // MARK: - UI
     
     var body: some View {
-        ZStack {
+        ZStack(alignment: .center) {
             VStack(spacing: 120) {
                 HStack(spacing: 16) {
                     Image.grabbit.logo
@@ -38,6 +38,7 @@ struct LoginView: View {
                 
                 Button {
                     authViewModel.signInWithGoogle()
+                    authViewModel.isAuthenticating = true
                 } label: {
                     Image.grabbit.google
                         .resizable()
@@ -49,6 +50,8 @@ struct LoginView: View {
             }
             
             showNotifications ? notificationsView : nil
+            
+            authViewModel.isAuthenticating ? ProgressView() : nil
         }
         .setBackground()
         .onAppear {
