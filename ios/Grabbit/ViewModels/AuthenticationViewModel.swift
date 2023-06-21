@@ -60,7 +60,10 @@ class AuthenticationViewModel: ObservableObject {
     func authenticateUser() async -> Result<User, Error> {
         guard let googleUser = Auth.auth().currentUser,
               let email = googleUser.email else {
-            isAuthenticating = false
+            DispatchQueue.main.async {
+                self.state = .signedOut
+                self.isAuthenticating = false
+            }
             return .failure(CustomError.authError)
         }
         
