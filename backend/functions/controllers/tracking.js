@@ -56,7 +56,7 @@ exports.updateTrackingStatus = async function (
   // Only notify if closed/waitlisted to open
   if ((status == "C" || status == "W") && result.openStatus == "O") {
     await sendNotification(
-      `Quick! The section code is ${sectionId}`,
+      `Quick! The section code is ${sectionId}.`,
       `${subject} ${number} ${sectionTitle} is Open!`,
       deviceIds
     );

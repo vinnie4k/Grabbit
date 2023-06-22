@@ -64,7 +64,7 @@ struct LoginView: View {
                 case .denied:
                     showNotifications = true
                 default:
-                    showNotifications = true
+                    showNotifications = false
                 }
             }
         }
