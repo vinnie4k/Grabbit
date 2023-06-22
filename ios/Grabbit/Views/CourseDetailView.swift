@@ -140,40 +140,7 @@ struct CourseDetailView: View {
         
         Button {
             Haptics.shared.play(.light)
-
-            if isTracking {
-                Task {
-                    let success = await trackingViewModel.untrackCourse(for: mainUser, with: trackedCourse)
-                    
-                    if success {
-                        await trackingViewModel.refreshUser(mainUser: mainUser)
-                        removedPopup.toggle()
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                            removedPopup.toggle()
-                        }
-                    }
-                }
-            } else {
-                // User cannot have more than 5 courses
-                if mainUser.tracking.count >= Constants.trackingLimit {
-                    errorPopup.toggle()
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                        errorPopup.toggle()
-                    }
-                } else {
-                    Task {
-                        let success = await trackingViewModel.trackCourse(for: mainUser, with: trackedCourse)
-                        
-                        if success {
-                            await trackingViewModel.refreshUser(mainUser: mainUser)
-                            addedPopup.toggle()
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                                addedPopup.toggle()
-                            }
-                        }
-                    }
-                }
-            }
+            toggleCourseTracking(trackedCourse: trackedCourse, isTracking: isTracking)
         } label: {
             Text(isTracking ? "UNTRACK" : "TRACK")
                 .font(.sfProRounded(size: 12, weight: .semibold))
@@ -188,6 +155,49 @@ struct CourseDetailView: View {
     }
     
     // MARK: - Helpers
+    
+    /// Track or untrack a given course
+    private func toggleCourseTracking(trackedCourse: TrackedCourse, isTracking: Bool) {
+        if isTracking {
+            Task {
+                let success = await trackingViewModel.untrackCourse(for: mainUser, with: trackedCourse)
+                
+                if success {
+                    await trackingViewModel.refreshUser(mainUser: mainUser)
+                    removedPopup.toggle()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                        removedPopup.toggle()
+                    }
+                }
+            }
+            
+            // Log analytics
+            AnalyticsManager.shared.logEvent(.untrackDetail)
+        } else {
+            // User cannot have more than 5 courses
+            if mainUser.tracking.count >= Constants.trackingLimit {
+                errorPopup.toggle()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                    errorPopup.toggle()
+                }
+            } else {
+                Task {
+                    let success = await trackingViewModel.trackCourse(for: mainUser, with: trackedCourse)
+                    
+                    if success {
+                        await trackingViewModel.refreshUser(mainUser: mainUser)
+                        addedPopup.toggle()
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                            addedPopup.toggle()
+                        }
+                    }
+                }
+            }
+            
+            // Log analytics
+            AnalyticsManager.shared.logEvent(.trackDetail)
+        }
+    }
     
     /// Splits the course sections into different groupings
     private func sortSections() {

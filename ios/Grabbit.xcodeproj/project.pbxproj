@@ -30,6 +30,7 @@
 		2E34E06D2A3D091A000370C2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2E34E06C2A3D091A000370C2 /* Assets.xcassets */; };
 		2E34E0702A3D091A000370C2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2E34E06F2A3D091A000370C2 /* Preview Assets.xcassets */; };
 		2E605B512A3E044E0031A587 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E605B502A3E044E0031A587 /* LoginView.swift */; };
+		2E86F2BE2A43ECC000068960 /* AnalyticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E86F2BD2A43ECC000068960 /* AnalyticsManager.swift */; };
 		2E9591BF2A3E7DD500F614E5 /* Secrets.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2E9591BE2A3E7DD500F614E5 /* Secrets.plist */; };
 		2E9591C12A3E7E7200F614E5 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9591C02A3E7E7200F614E5 /* NetworkManager.swift */; };
 		2E9591C32A3EAE8D00F614E5 /* CourseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9591C22A3EAE8D00F614E5 /* CourseDetailView.swift */; };
@@ -71,6 +72,7 @@
 		2E34E06C2A3D091A000370C2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2E34E06F2A3D091A000370C2 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		2E605B502A3E044E0031A587 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		2E86F2BD2A43ECC000068960 /* AnalyticsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsManager.swift; sourceTree = "<group>"; };
 		2E9591BE2A3E7DD500F614E5 /* Secrets.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Secrets.plist; sourceTree = "<group>"; };
 		2E9591C02A3E7E7200F614E5 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		2E9591C22A3EAE8D00F614E5 /* CourseDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseDetailView.swift; sourceTree = "<group>"; };
@@ -161,6 +163,7 @@
 		2E2A5C762A3D380400B87A94 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
+				2E86F2BD2A43ECC000068960 /* AnalyticsManager.swift */,
 				2E9591C02A3E7E7200F614E5 /* NetworkManager.swift */,
 			);
 			path = Networking;
@@ -391,6 +394,7 @@
 				2E32235C2A3E2B6E00AA7172 /* SectionTitlePill.swift in Sources */,
 				2E34E0692A3D0919000370C2 /* GrabbitApp.swift in Sources */,
 				2E3223502A3E192E00AA7172 /* Image+Extension.swift in Sources */,
+				2E86F2BE2A43ECC000068960 /* AnalyticsManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -520,7 +524,7 @@
 				CODE_SIGN_ENTITLEMENTS = Grabbit/Grabbit.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"Grabbit/Preview Content\"";
 				DEVELOPMENT_TEAM = V7HFE3Z97P;
 				ENABLE_PREVIEWS = YES;
@@ -561,7 +565,7 @@
 				CODE_SIGN_ENTITLEMENTS = Grabbit/Grabbit.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"Grabbit/Preview Content\"";
 				DEVELOPMENT_TEAM = V7HFE3Z97P;
 				ENABLE_PREVIEWS = YES;
