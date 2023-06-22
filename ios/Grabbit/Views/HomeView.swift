@@ -108,6 +108,13 @@ struct HomeView: View {
                     .scaledToFit()
                     .frame(width: 24, height: 24)
             }
+            .simultaneousGesture(
+                TapGesture()
+                    .onEnded {
+                        // Log analytics
+                        AnalyticsManager.shared.logEvent(.tapSettings)
+                    }
+            )
         }
         .padding(.top)
         .padding(.horizontal, Constants.sidePadding)
@@ -137,6 +144,13 @@ struct HomeView: View {
             .cornerRadius(8)
         }
         .padding(.horizontal, Constants.sidePadding)
+        .simultaneousGesture(
+            TapGesture()
+                .onEnded {
+                    // Log analytics
+                    AnalyticsManager.shared.logEvent(.tapSearchBar)
+                }
+        )
     }
     
     private var openSection: some View {
@@ -263,6 +277,9 @@ struct HomeView: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 clipboardPopup.toggle()
             }
+            
+            // Log analytics
+            AnalyticsManager.shared.logEvent(.copyCode)
         } label: {
             Label(code, image: "copy")
             .font(.sfProRounded(size: 12, weight: .bold))
@@ -281,6 +298,9 @@ struct HomeView: View {
             if let url = URL(string: Secrets.studentCenterLink) {
                 openURL(url)
             }
+            
+            // Log analytics
+            AnalyticsManager.shared.logEvent(.tapEnroll)
         } label: {
             RoundedRectangle(cornerRadius: 4)
                 .fill(Color.grabbit.success)
@@ -350,6 +370,13 @@ struct HomeView: View {
                     removedPopup.toggle()
                 }
             }
+        }
+        
+        // Log analytics
+        if trackedCourse.status == .open {
+            AnalyticsManager.shared.logEvent(.untrackOpenHome)
+        } else {
+            AnalyticsManager.shared.logEvent(.untrackClosedHome)
         }
     }
     

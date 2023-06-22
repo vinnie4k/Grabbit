@@ -134,6 +134,13 @@ struct SearchView: View {
             }
             .cornerRadius(12)
         }
+        .simultaneousGesture(
+            TapGesture()
+                .onEnded {
+                    // Log analytics
+                    AnalyticsManager.shared.logEvent(.tapSearchResults)
+                }
+        )
     }
 }
 
