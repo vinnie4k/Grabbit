@@ -24,7 +24,7 @@ struct SearchBar: View {
                 .foregroundColor(Color.grabbit.silver)
                 .frame(width: 16, height: 16)
             
-            TextField("Search for a course", text: $text)
+            TextField("Search course (ex. CS 2800)", text: $text)
                 .font(.sfProRounded(size: 16, weight: .medium))
                 .foregroundColor(Color.grabbit.offWhite)
                 .tint(Color.grabbit.offWhite)

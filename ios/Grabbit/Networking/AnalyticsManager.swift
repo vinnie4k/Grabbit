@@ -28,7 +28,7 @@ enum GrabbitEvent: String {
     case untrackOpenHome = "untrack_open_home"
     
     /// Copies the code for a course in the home page
-    case copyCode = "copy_closed"
+    case copyCode = "copy_code"
     
     /// Taps on the "Enroll" button
     case tapEnroll = "tap_enroll"

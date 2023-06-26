@@ -1,5 +1,5 @@
 // Firebase SDK
-const { getFirestore } = require("firebase-admin/firestore");
+const { getFirestore, FieldValue } = require("firebase-admin/firestore");
 const { getMessaging } = require("firebase-admin/messaging");
 const { logger } = require("firebase-functions");
 
@@ -19,53 +19,71 @@ const constants = require("../supporting/constants");
 /**
  * Search for a course from the Cornell API and update its tracking status
  *
- * @param {number} courseId the course's ID
- * @param {Array} deviceIds the tracked device IDs
- * @param {number} number the number of the course (e.g. 1920)
- * @param {number} sectionId the section ID
- * @param {string} sectionTitle the section title (e.g. "LEC 001")
- * @param {status} status the current status of the section
- * @param {string} subject the subject of the course in all CAPS (e.g. "MATH")
+ * @param trackedCourse the course to search for
  */
-exports.updateTrackingStatus = async function (
-  courseId,
-  deviceIds,
-  number,
-  sectionId,
-  sectionTitle,
-  status,
-  subject
-) {
+exports.updateTrackingStatus = async function (trackedCourse) {
   const response = await fetch(
-    `${constants.ROSTER_URL}&subject=${subject}&classLevels%5B%5D=${String(
-      number
-    ).charAt(0)}000`
+    `${constants.ROSTER_URL}&subject=${
+      trackedCourse.subject
+    }&classLevels%5B%5D=${String(trackedCourse.number).charAt(0)}000`
   );
 
   const data = await response.json();
   const classes = data["data"]["classes"];
 
   let result = classes.filter((dict) => {
-    return dict.crseId == courseId;
+    return dict.crseId == trackedCourse.course_id;
   })[0];
 
   result = result.enrollGroups[0].classSections.filter((dict) => {
-    return dict.classNbr == sectionId;
+    return dict.classNbr == trackedCourse.section_id;
   })[0];
 
   // Only notify if closed/waitlisted to open
-  if ((status == "C" || status == "W") && result.openStatus == "O") {
+  if (
+    (trackedCourse.status == "C" || trackedCourse.status == "W") &&
+    result.openStatus == "O"
+  ) {
     await sendNotification(
-      `Quick! The section code is ${sectionId}.`,
-      `${subject} ${number} ${sectionTitle} is Open!`,
-      deviceIds
+      `Quick! The section code is ${trackedCourse.section_id}.`,
+      `${trackedCourse.subject} ${trackedCourse.number} ${trackedCourse.section_title} is Open!`,
+      trackedCourse.device_ids
     );
   }
 
   // Update database only if there are changes
-  if (status != result.openStatus) {
-    await db.collection("courses").doc(String(sectionId)).update({
-      status: result.openStatus,
+  if (trackedCourse.status != result.openStatus) {
+    await db
+      .collection("courses")
+      .doc(String(trackedCourse.section_id))
+      .update({
+        status: result.openStatus,
+      });
+
+    trackedCourse.device_ids.forEach(async (deviceId) => {
+      const snapshot = await db
+        .collection("users")
+        .where("device_id", "==", deviceId)
+        .get();
+
+      const trackedCourseCopy = {};
+      Object.assign(trackedCourseCopy, trackedCourse);
+      delete trackedCourseCopy.device_ids;
+
+      snapshot.forEach(async (doc) => {
+        const userRef = db.collection("users").doc(doc.id);
+
+        // Delete old status
+        await userRef.update({
+          tracking: FieldValue.arrayRemove(trackedCourseCopy),
+        });
+
+        // Add new status
+        trackedCourseCopy.status = result.openStatus;
+        await userRef.update({
+          tracking: FieldValue.arrayUnion(trackedCourseCopy),
+        });
+      });
     });
   }
 
@@ -90,7 +108,29 @@ const sendNotification = async function (body, title, tokens) {
 
   try {
     const response = await getMessaging().sendEachForMulticast(message);
-    logger.log(response.successCount + " notifications were sent successfully");
+    logger.log(`${response.successCount} notifications were sent successfully`);
+
+    // Remove all failed tokens
+    if (response.failureCount > 0) {
+      logger.log(`${response.failureCount} notifications failed`);
+      response.responses.forEach(async (resp, idx) => {
+        if (!resp.success) {
+          const snapshot = await db
+            .collection("courses")
+            .where("device_ids", "array-contains", tokens[idx])
+            .get();
+
+          snapshot.forEach(async (doc) => {
+            await db
+              .collection("courses")
+              .doc(doc.id)
+              .update({
+                device_ids: FieldValue.arrayRemove(tokens[idx]),
+              });
+          });
+        }
+      });
+    }
   } catch (error) {
     logger.log(`error: ${error}`);
   }

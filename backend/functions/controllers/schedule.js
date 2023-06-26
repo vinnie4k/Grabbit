@@ -18,15 +18,7 @@ exports.fetchUpdates = onSchedule("* * * * *", async () => {
   const docs = await db.collection("courses").get();
   docs.forEach(async (doc) => {
     const data = doc.data();
-    await tracking.updateTrackingStatus(
-      data.course_id,
-      data.device_ids,
-      data.number,
-      data.section_id,
-      data.section_title,
-      data.status,
-      data.subject
-    );
+    await tracking.updateTrackingStatus(data);
   });
 });
 
