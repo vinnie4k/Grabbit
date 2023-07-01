@@ -65,6 +65,38 @@ async function addTrackedCourses(trackedCourse, deviceId) {
 // ======= Routes =======
 
 /**
+ * This route deletes a user account
+ *
+ * - user_id (String): the user's ID to delete
+ */
+app.post("/delete/", async (req, res) => {
+  const userId = req.body.user_id;
+
+  if (userId == null) {
+    return constants.errorResponse("Invalid user ID specified", 404, res);
+  }
+
+  try {
+    // Get the user's tracked courses
+    const doc = await db.collection("users").doc(userId).get();
+    const userData = doc.data();
+    const trackedCourses = userData.tracking;
+    const deviceId = userData.device_id;
+
+    // Update Tracked Courses
+    trackedCourses.forEach(async (trackedCourse) => {
+      await removeTrackedCourses(trackedCourse, deviceId);
+    });
+
+    // Delete user document
+    await db.collection("users").doc(userId).delete();
+    return constants.successResponse(userData, 200, res);
+  } catch (error) {
+    return constants.errorResponse("Unable to delete the account", 500, res);
+  }
+});
+
+/**
  * This route removes a course from being tracked for a given user ID
  *
  * - course_id (Integer): the course's ID

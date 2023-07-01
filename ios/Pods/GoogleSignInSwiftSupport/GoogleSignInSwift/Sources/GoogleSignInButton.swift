@@ -100,7 +100,6 @@ public struct GoogleSignInButton: View {
               height: buttonHeight,
               alignment: .leading
             )
-          Spacer()
         }
       }
     }

@@ -5,6 +5,8 @@
 //  Created by Vin Bui on 6/17/23.
 //
 
+import AuthenticationServices
+import GoogleSignInSwift
 import SwiftUI
 
 struct LoginView: View {
@@ -36,15 +38,23 @@ struct LoginView: View {
                         .foregroundColor(Color.grabbit.offWhite)
                 }
                 
-                Button {
-                    authViewModel.signInWithGoogle()
-                    authViewModel.isAuthenticating = true
-                } label: {
-                    Image.grabbit.google
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 40)
-                        .padding(.horizontal, Constants.sidePadding)
+                VStack(spacing: 24) {
+                    GoogleSignInButton(scheme: .light, style: .wide, state: .normal) {
+                        authViewModel.signInWithGoogle()
+                        authViewModel.isAuthenticating = true
+                    }
+                    .frame(width: 256, height: 40)
+                    .cornerRadius(12)
+                                        
+                    SignInWithAppleButton(.signIn) { request in
+                        authViewModel.signInWithAppleRequest(request)
+                        authViewModel.isAuthenticating = true
+                    } onCompletion: { result in
+                        authViewModel.signInWithAppleCompletion(result)
+                    }
+                    .signInWithAppleButtonStyle(.black)
+                    .frame(width: 256, height: 40)
+                    .cornerRadius(12)
                 }
                 .disabled(showNotifications)
             }

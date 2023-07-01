@@ -12,6 +12,7 @@ class NetworkManager: ObservableObject {
     
     // MARK: - Properties
     
+    /// Shared singleton instance of `NetworkManager`
     static let shared = NetworkManager()
     
     // MARK: - Course Requests
@@ -53,11 +54,45 @@ class NetworkManager: ObservableObject {
     // MARK: - User Requests
     
     /**
+     Delete a user account
+     
+     - Parameters:
+        - userId: the ID of the user account to delete
+     
+     - Returns: the delete `User` account if successful; otherwise `Error`
+     */
+    func deleteAccount(for user: User) async -> Result<User, Error> {
+        let urlString = Secrets.userEndpoint + "/delete/"
+        let parameters: Parameters = [
+            "user_id": user.id
+        ]
+        
+        do {
+            let value = try await AF.request(urlString, method: .post, parameters: parameters, encoding: JSONEncoding.default).serializingDecodable(ResponseType.self).value
+            
+            switch value {
+            case .user(let user):
+                print("Successfuly deleted account for user \(user.id)")
+                return .success(user)
+            case .error(let error):
+                print("Error in NetworkManager.deleteAccount: \(error)")
+                return .failure(CustomError.requestError(error))
+            default:
+                return .failure(CustomError.requestError("Invalid request"))
+            }
+        } catch {
+            print("Error in NetworkManager.deleteAccount: \(error)")
+            return .failure(error)
+        }
+    }
+    
+    /**
      Removes a course to be untracked for a user
      
      - Parameters:
         - user: the user to remove the course from
         - trackedCourse: the course to untrack
+     
      - Returns: the removed `TrackedCourse` if successful; otherwise `Error`
      */
     func untrackCourse(for user: User, with trackedCourse: TrackedCourse) async -> Result<TrackedCourse, Error> {
@@ -102,6 +137,7 @@ class NetworkManager: ObservableObject {
      - Parameters:
         - user: the user to add the course to
         - trackedCourse: the course to track
+     
      - Returns: the `TrackedCourse` if successful; otherwise `Error`
      */
     func trackCourse(for user: User, with trackedCourse: TrackedCourse) async -> Result<TrackedCourse, Error> {
@@ -146,6 +182,7 @@ class NetworkManager: ObservableObject {
      - Parameters:
         - deviceId: the device ID to fetch and replace (FCM Token)
         - userId: the user ID to fetch
+     
      - Returns: the fetched`User` if successful; otherwise `Error`
      */
     func updateDeviceToken(deviceId: String, userId: String) async -> Result<User, Error> {
@@ -183,6 +220,7 @@ class NetworkManager: ObservableObject {
      - Parameters:
         - deviceId: the device ID to fetch and replace (FCM Token)
         - userId: the user ID to fetch
+     
      - Returns: the fetched`User` if successful; otherwise `Error`
      */
     func fetchUser(deviceId: String, email: String, userId: String) async -> Result<User, Error> {
