@@ -113,9 +113,24 @@ struct LoginView: View {
                     )
             }
             .frame(height: 33)
+            
+            Button {
+                withAnimation(.easeOut) {
+                    showNotifications.toggle()
+                }
+            } label: {
+                RoundedRectangle(cornerRadius: 4)
+                    .fill(Color.grabbit.silver)
+                    .overlay(
+                        Text("Dismiss")
+                            .font(.sfProRounded(size: 14, weight: .regular))
+                            .foregroundColor(Color.grabbit.primary)
+                    )
+            }
+            .frame(height: 33)
         }
         .padding(20)
-        .frame(width: 240, height: 240)
+        .frame(width: 240, height: 280)
         .background(Color.grabbit.primary)
         .cornerRadius(16)
         .shadow(radius: 4)
