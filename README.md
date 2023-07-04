@@ -16,7 +16,7 @@ Pre-enroll didn't go so well? Are all of your classes full? Grabbit is here to h
 
 Search for your course through the app to begin tracking. Grabbit will notify you when a spot opens up, and you can quickly copy the section code and go to Student Center through the app. Sit back, relax, and enable push notifications!
 
-You can download the app [here](#TODO: APPSTORE LINK)!
+You can download the app [here](https://apps.apple.com/us/app/grabbit/id6450518666)!
 
 ## Features
 - Search thousands of courses offered at Cornell
