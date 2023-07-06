@@ -321,7 +321,7 @@ struct HomeView: View {
                 .resizable()
                 .scaledToFit()
                 .foregroundColor(Color.grabbit.offWhite)
-                .frame(width: 80, height: 80)
+                .frame(width: 60, height: 60)
                 .padding(.bottom, 8)
             
             Text("No tracked courses")
@@ -342,7 +342,7 @@ struct HomeView: View {
                 .resizable()
                 .scaledToFit()
                 .foregroundColor(Color.grabbit.offWhite)
-                .frame(width: 80, height: 80)
+                .frame(width: 60, height: 60)
                 .padding(.bottom, 8)
             
             Text("Your tracked courses are open")
