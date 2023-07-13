@@ -27,7 +27,7 @@ struct CourseDetailView: View {
     private struct Constants {
         static let cellHeight: CGFloat = 48
         static let sidePadding: CGFloat = 24
-        static let trackingLimit: Int = 5
+        static let trackingLimit: Int = 10
     }
     
     // MARK: - UI
@@ -54,7 +54,7 @@ struct CourseDetailView: View {
         .navigationBarBackButtonHidden(true)
         .popup(showPopup: addedPopup, image: Image.grabbit.checkmark, imageColor: Color.grabbit.success, text: "Added")
         .popup(showPopup: removedPopup, image: Image.grabbit.checkmark, imageColor: Color.grabbit.success, text: "Removed")
-        .popup(showPopup: errorPopup, image: Image.grabbit.error, imageColor: Color.grabbit.error, text: "Max of 5 courses")
+        .popup(showPopup: errorPopup, image: Image.grabbit.error, imageColor: Color.grabbit.error, text: "Max of \(Constants.trackingLimit) courses")
     }
     
     private var navBar: some View {
@@ -174,7 +174,7 @@ struct CourseDetailView: View {
             // Log analytics
             AnalyticsManager.shared.logEvent(.untrackDetail)
         } else {
-            // User cannot have more than 5 courses
+            // User cannot have more than `Constants.trackingLimit` courses
             if mainUser.tracking.count >= Constants.trackingLimit {
                 errorPopup.toggle()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {

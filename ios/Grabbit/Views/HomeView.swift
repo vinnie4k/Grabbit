@@ -15,12 +15,12 @@ struct HomeView: View {
     @EnvironmentObject private var mainUser: User
     @EnvironmentObject private var trackingViewModel: TrackingViewModel
     
-    @State private var isFetching: Bool = true
-    @State private var showConfirmation: Bool = false
     @State private var clipboardPopup: Bool = false
-    @State private var trackedCourse: TrackedCourse? = nil
     @State private var confirmationStatus: ConfirmationStatus = .none
+    @State private var isFetching: Bool = true
     @State private var removedPopup: Bool = false
+    @State private var showConfirmation: Bool = false
+    @State private var trackedCourse: TrackedCourse? = nil
     
     @Environment(\.openURL) var openURL
     
@@ -316,13 +316,13 @@ struct HomeView: View {
     // MARK: - Empty States
     
     private var completeEmptyState: some View {
-        VStack {
+        VStack(spacing: 0) {
             Image.grabbit.eyeSlash
                 .resizable()
                 .scaledToFit()
                 .foregroundColor(Color.grabbit.offWhite)
-                .frame(width: 80, height: 80)
-                .padding(.bottom, 8)
+                .frame(width: 60, height: 60)
+                .padding(.bottom, 16)
             
             Text("No tracked courses")
                 .font(.sfProRounded(size: 20, weight: .semibold))
@@ -337,13 +337,13 @@ struct HomeView: View {
     }
     
     private var halfEmptyState: some View {
-        VStack {
+        VStack(spacing: 0) {
             Image.grabbit.unlock
                 .resizable()
                 .scaledToFit()
                 .foregroundColor(Color.grabbit.offWhite)
-                .frame(width: 80, height: 80)
-                .padding(.bottom, 8)
+                .frame(width: 60, height: 60)
+                .padding(.bottom, 16)
             
             Text("Your tracked courses are open")
                 .font(.sfProRounded(size: 20, weight: .semibold))

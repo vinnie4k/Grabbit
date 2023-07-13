@@ -16,8 +16,10 @@ struct SettingsView: View {
     @State private var deleteConfirmationStatus: ConfirmationStatus = .none
     @State private var email: String = ""
     @State private var isInvalid: Bool = false
+    @State private var logoutConfirmationStatus: ConfirmationStatus = .none
     @State private var showDeleteAlert: Bool = false
     @State private var showError: Bool = false
+    @State private var showLogoutAlert: Bool = false
     @State private var showSpinner: Bool = false
     
     @EnvironmentObject private var authViewModel: AuthenticationViewModel
@@ -75,6 +77,26 @@ struct SettingsView: View {
                 break
             }
         }
+        .showConfirmation(
+            action: "Sign Out",
+            heading: "Sign Out",
+            subheading: "Sign out of \(mainUser.email)?",
+            showConfirmation: showLogoutAlert,
+            confirmationStatus: $logoutConfirmationStatus
+        )
+        .onChange(of: logoutConfirmationStatus) { status in
+            showLogoutAlert = false
+            logoutConfirmationStatus = .none
+            
+            switch status {
+            case .confirm:
+                authViewModel.signOut()
+                mainUser.id = ""
+                self.presentationMode.wrappedValue.dismiss()
+            default:
+                break
+            }
+        }
         .alert("Confirm Email", isPresented: $confirmEmail) {
             TextField(Auth.auth().currentUser?.email ?? "", text: $email)
             Button("Delete", role: .destructive, action: authenticateEmail)
@@ -109,9 +131,7 @@ struct SettingsView: View {
             
             Button {
                 Haptics.shared.play(.light)
-                authViewModel.signOut()
-                mainUser.id = ""
-                self.presentationMode.wrappedValue.dismiss()
+                showLogoutAlert = true
             } label: {
                 Image.grabbit.logout
                     .resizable()

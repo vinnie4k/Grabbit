@@ -26,7 +26,7 @@ extension Image {
         let logout = Image("logout")
         let magnifyingGlass = Image(systemName: "magnifyingglass")
         let settings = Image("settings")
-        let unlock = Image(systemName: "lock.open.fill")
+        let unlock = Image(systemName: "lock.open")
         let xmark = Image(systemName: "xmark")
     }
     
