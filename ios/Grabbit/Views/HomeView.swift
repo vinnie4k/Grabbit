@@ -15,12 +15,12 @@ struct HomeView: View {
     @EnvironmentObject private var mainUser: User
     @EnvironmentObject private var trackingViewModel: TrackingViewModel
     
-    @State private var isFetching: Bool = true
-    @State private var showConfirmation: Bool = false
     @State private var clipboardPopup: Bool = false
-    @State private var trackedCourse: TrackedCourse? = nil
     @State private var confirmationStatus: ConfirmationStatus = .none
+    @State private var isFetching: Bool = true
     @State private var removedPopup: Bool = false
+    @State private var showConfirmation: Bool = false
+    @State private var trackedCourse: TrackedCourse? = nil
     
     @Environment(\.openURL) var openURL
     
