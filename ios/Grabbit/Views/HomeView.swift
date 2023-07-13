@@ -316,13 +316,13 @@ struct HomeView: View {
     // MARK: - Empty States
     
     private var completeEmptyState: some View {
-        VStack {
+        VStack(spacing: 0) {
             Image.grabbit.eyeSlash
                 .resizable()
                 .scaledToFit()
                 .foregroundColor(Color.grabbit.offWhite)
                 .frame(width: 60, height: 60)
-                .padding(.bottom, 8)
+                .padding(.bottom, 16)
             
             Text("No tracked courses")
                 .font(.sfProRounded(size: 20, weight: .semibold))
@@ -337,13 +337,13 @@ struct HomeView: View {
     }
     
     private var halfEmptyState: some View {
-        VStack {
+        VStack(spacing: 0) {
             Image.grabbit.unlock
                 .resizable()
                 .scaledToFit()
                 .foregroundColor(Color.grabbit.offWhite)
                 .frame(width: 60, height: 60)
-                .padding(.bottom, 8)
+                .padding(.bottom, 16)
             
             Text("Your tracked courses are open")
                 .font(.sfProRounded(size: 20, weight: .semibold))
