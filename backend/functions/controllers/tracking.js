@@ -52,7 +52,7 @@ exports.updateTrackingStatus = async function (trackedCourse) {
   }
 
   // Update database only if there are changes
-  if (trackedCourse.status != result.openStatus) {
+  if (result.openStatus != null && trackedCourse.status != result.openStatus) {
     await db
       .collection("courses")
       .doc(String(trackedCourse.section_id))
