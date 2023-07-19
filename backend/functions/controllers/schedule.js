@@ -18,8 +18,11 @@ exports.fetchUpdates = onSchedule("* * * * *", async () => {
   const docs = await db.collection("courses").get();
   docs.forEach(async (doc) => {
     const data = doc.data();
+    logger.log(`Checking ${data.section_id}`);
     await tracking.updateTrackingStatus(data);
   });
+
+  return;
 });
 
 // /**

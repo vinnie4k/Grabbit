@@ -22,72 +22,95 @@ const constants = require("../supporting/constants");
  * @param trackedCourse the course to search for
  */
 exports.updateTrackingStatus = async function (trackedCourse) {
-  const response = await fetch(
-    `${constants.ROSTER_URL}&subject=${
-      trackedCourse.subject
-    }&classLevels%5B%5D=${String(trackedCourse.number).charAt(0)}000`
-  );
-
-  const data = await response.json();
-  const classes = data["data"]["classes"];
-
-  let result = classes.filter((dict) => {
-    return dict.crseId == trackedCourse.course_id;
-  })[0];
-
-  result = result.enrollGroups[0].classSections.filter((dict) => {
-    return dict.classNbr == trackedCourse.section_id;
-  })[0];
-
-  // Only notify if closed/waitlisted to open
-  if (
-    (trackedCourse.status == "C" || trackedCourse.status == "W") &&
-    result.openStatus == "O"
-  ) {
-    await sendNotification(
-      `Quick! The section code is ${trackedCourse.section_id}.`,
-      `${trackedCourse.subject} ${trackedCourse.number} ${trackedCourse.section_title} is Open!`,
-      trackedCourse.device_ids
+  try {
+    const response = await fetch(
+      `${constants.ROSTER_URL}&subject=${
+        trackedCourse.subject
+      }&classLevels%5B%5D=${String(trackedCourse.number).charAt(0)}000`
     );
-  }
 
-  // Update database only if there are changes
-  if (result.openStatus != null && trackedCourse.status != result.openStatus) {
-    await db
-      .collection("courses")
-      .doc(String(trackedCourse.section_id))
-      .update({
-        status: result.openStatus,
-      });
+    const data = await response.json();
+    const classes = data["data"]["classes"];
 
-    trackedCourse.device_ids.forEach(async (deviceId) => {
-      const snapshot = await db
-        .collection("users")
-        .where("device_id", "==", deviceId)
-        .get();
+    let result = classes.filter((dict) => {
+      return dict.crseId == trackedCourse.course_id;
+    })[0];
 
-      const trackedCourseCopy = {};
-      Object.assign(trackedCourseCopy, trackedCourse);
-      delete trackedCourseCopy.device_ids;
+    result = result.enrollGroups[0].classSections.filter((dict) => {
+      return dict.classNbr == trackedCourse.section_id;
+    })[0];
 
-      snapshot.forEach(async (doc) => {
-        const userRef = db.collection("users").doc(doc.id);
+    // Only notify if closed/waitlisted to open
+    if (
+      (trackedCourse.status == "C" || trackedCourse.status == "W") &&
+      result.openStatus == "O"
+    ) {
+      try {
+        await sendNotification(
+          `Quick! The section code is ${trackedCourse.section_id}.`,
+          `${trackedCourse.subject} ${trackedCourse.number} ${trackedCourse.section_title} is Open!`,
+          trackedCourse.device_ids
+        );
+      } catch (error) {
+        logger.log("Error sending notification");
+      }
+    }
 
-        // Delete old status
-        await userRef.update({
-          tracking: FieldValue.arrayRemove(trackedCourseCopy),
+    // Update database only if there are changes
+    if (
+      result.openStatus != null &&
+      trackedCourse.status != result.openStatus
+    ) {
+      try {
+        await db
+          .collection("courses")
+          .doc(String(trackedCourse.section_id))
+          .update({
+            status: result.openStatus,
+          });
+      } catch (error) {
+        logger.log("Error updating course status");
+      }
+
+      trackedCourse.device_ids.forEach(async (deviceId) => {
+        const snapshot = await db
+          .collection("users")
+          .where("device_id", "==", deviceId)
+          .get();
+
+        const trackedCourseCopy = {};
+        Object.assign(trackedCourseCopy, trackedCourse);
+        delete trackedCourseCopy.device_ids;
+
+        snapshot.forEach(async (doc) => {
+          const userRef = db.collection("users").doc(doc.id);
+
+          // Delete old status
+          try {
+            await userRef.update({
+              tracking: FieldValue.arrayRemove(trackedCourseCopy),
+            });
+          } catch (error) {
+            logger.log("Error updating user's tracked courses");
+          }
+
+          // Add new status
+          trackedCourseCopy.status = result.openStatus;
+          try {
+            await userRef.update({
+              tracking: FieldValue.arrayUnion(trackedCourseCopy),
+            });
+          } catch (error) {
+            logger.log("Error updating user's tracked courses");
+          }
         });
-
-        // Add new status
-        trackedCourseCopy.status = result.openStatus;
-        await userRef.update({
-          tracking: FieldValue.arrayUnion(trackedCourseCopy),
-        });
       });
-    });
+    }
+    return;
+  } catch (error) {
+    logger.log(`error: ${error}`);
+    return;
   }
-
-  return;
 };
 
 /**
