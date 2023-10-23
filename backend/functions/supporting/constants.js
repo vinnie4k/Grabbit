@@ -1,5 +1,5 @@
 exports.ROSTER_URL =
-  "https://classes.cornell.edu/api/2.0/search/classes.json?roster=FA23";
+  "https://classes.cornell.edu/api/2.0/search/classes.json?roster=SP24";
 
 // Success and Error JSON
 exports.errorResponse = function (msg, code, res) {
