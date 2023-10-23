@@ -18,7 +18,7 @@ struct LoadingAnimation: View {
                 DotView(delay: 0.2)
                 DotView(delay: 0.4)
             }
-            
+
             Text(text)
                 .font(.sfProRounded(size: 16, weight: .semibold))
                 .foregroundColor(Color.grabbit.offWhite)
@@ -37,8 +37,10 @@ struct DotView: View {
             .frame(width: 32, height: 32)
             .scaleEffect(scale)
             .onAppear {
-                withAnimation(.easeInOut(duration: 0.6).repeatForever().delay(delay)) {
-                    self.scale = 0.75
+                DispatchQueue.main.async {
+                    withAnimation(.easeInOut(duration: 0.6).repeatForever().delay(delay)) {
+                        self.scale = 0.75
+                    }
                 }
             }
     }
