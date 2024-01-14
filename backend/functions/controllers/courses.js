@@ -56,10 +56,11 @@ function formatCourses(arr) {
     const newDict = {};
     newDict["id"] = oldDict.crseId;
     newDict["number"] = oldDict.catalogNbr;
-    newDict["sections"] = formatSections(oldDict.enrollGroups[0].classSections);
+    newDict["sections"] = oldDict.enrollGroups.flatMap((d) =>
+      formatSections(d.classSections)
+    );
     newDict["subject"] = oldDict.subject;
     newDict["title"] = oldDict.titleLong;
-    console.log(oldDict.enrollGroups.classSections);
     return newDict;
   });
 }

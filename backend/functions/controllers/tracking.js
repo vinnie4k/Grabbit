@@ -36,9 +36,11 @@ exports.updateTrackingStatus = async function (trackedCourse) {
       return dict.crseId == trackedCourse.course_id;
     })[0];
 
-    result = result.enrollGroups[0].classSections.filter((dict) => {
-      return dict.classNbr == trackedCourse.section_id;
-    })[0];
+    result = result.enrollGroups.flatMap((d) =>
+      d.classSections.filter(
+        (dict) => dict.classNbr == trackedCourse.section_id
+      )
+    )[0];
 
     // Only notify if closed/waitlisted to open
     if (
