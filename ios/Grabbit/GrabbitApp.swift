@@ -53,6 +53,7 @@ struct GrabbitApp: App {
             mainUser.id = user.id
             mainUser.deviceId = user.deviceId
             mainUser.email = user.email
+            mainUser.hasLimit = user.hasLimit
             mainUser.tracking = user.tracking
             
             authViewModel.state = .signedIn
