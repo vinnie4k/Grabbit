@@ -175,7 +175,7 @@ struct CourseDetailView: View {
             AnalyticsManager.shared.logEvent(.untrackDetail)
         } else {
             // User cannot have more than `Constants.trackingLimit` courses
-            if mainUser.tracking.count >= Constants.trackingLimit {
+            if mainUser.hasLimit && mainUser.tracking.count >= Constants.trackingLimit {
                 errorPopup.toggle()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                     errorPopup.toggle()

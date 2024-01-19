@@ -9,7 +9,9 @@ import Alamofire
 import SwiftUI
 
 class NetworkManager: ObservableObject {
-    
+
+    private init() {}
+
     // MARK: - Properties
     
     /// Shared singleton instance of `NetworkManager`

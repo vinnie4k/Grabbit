@@ -12,21 +12,23 @@ class User: Decodable, ObservableObject {
     @Published var id: String
     @Published var deviceId: String
     @Published var email: String
+    @Published var hasLimit: Bool
     @Published var tracking: [TrackedCourse]
     
-    static let mainUser = User(id: "", deviceId: "", email: "", tracking: [])
-    
+    static let mainUser = User(id: "", deviceId: "", email: "", hasLimit: true, tracking: [])
+
     // Default initializer
-    init(id: String, deviceId: String, email: String, tracking: [TrackedCourse]) {
+    init(id: String, deviceId: String, email: String, hasLimit: Bool, tracking: [TrackedCourse]) {
         self.id = id
         self.deviceId = deviceId
         self.email = email
+        self.hasLimit = hasLimit
         self.tracking = tracking
     }
     
     // Codable
     enum CodingKeys: CodingKey {
-        case id, device_id, email, tracking
+        case id, device_id, email, has_limit, tracking
     }
     
     required init(from decoder: Decoder) throws {
@@ -34,6 +36,7 @@ class User: Decodable, ObservableObject {
         self.id = try container.decode(String.self, forKey: .id)
         self.deviceId = try container.decode(String.self, forKey: .device_id)
         self.email = try container.decode(String.self, forKey: .email)
+        self.hasLimit = try container.decodeIfPresent(Bool.self, forKey: .has_limit) ?? true
         self.tracking = try container.decode([TrackedCourse].self, forKey: .tracking)
     }
     
