@@ -27,7 +27,7 @@ struct CourseDetailView: View {
     private struct Constants {
         static let cellHeight: CGFloat = 48
         static let sidePadding: CGFloat = 24
-        static let trackingLimit: Int = 20
+        static let trackingLimit: Int = 25
     }
     
     // MARK: - UI
