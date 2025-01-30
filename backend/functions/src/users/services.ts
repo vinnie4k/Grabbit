@@ -37,6 +37,8 @@ class UserService {
 
     // If the user exists, update the device ID and email
     await ref.update({ deviceId, email });
+    user.deviceId = deviceId;
+    user.email = email;
 
     return user as User;
   }
@@ -47,7 +49,7 @@ class UserService {
    * @param userId The ID of the user.
    * @param sectionId The ID of the section.
    */
-  static async trackSection(userId: string, sectionId: string): Promise<void> {
+  static async trackSection(userId: string, sectionId: number): Promise<void> {
     const ref = db.collection(USER_COLLECTION).doc(userId);
     await ref.update({
       tracking: FieldValue.arrayUnion(sectionId),
@@ -62,7 +64,7 @@ class UserService {
    */
   static async untrackSection(
     userId: string,
-    sectionId: string
+    sectionId: number
   ): Promise<void> {
     const ref = db.collection(USER_COLLECTION).doc(userId);
     await ref.update({

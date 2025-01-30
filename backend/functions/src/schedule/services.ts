@@ -95,9 +95,9 @@ export class ScheduleService {
     try {
       // Fetch the class from the Cornell API
       const response = await fetch(
-        `${ROSTER_URL}&subject=${section.subject}&classLevels%5B%5D=${String(
-          section.number
-        ).charAt(0)}000`
+        `${ROSTER_URL}&subject=${
+          section.subject
+        }&classLevels%5B%5D=${section.number.toString().charAt(0)}000`
       );
       const fetchedClasses = (await response.json()).data.classes;
 

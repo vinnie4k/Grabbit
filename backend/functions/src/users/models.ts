@@ -20,5 +20,5 @@ export interface User {
   /**
    * The list of section IDs the user is tracking.
    */
-  tracking: string[];
+  tracking: number[];
 }

@@ -11,17 +11,17 @@ export class SearchService {
   static async searchClass(subject: string, number: string): Promise<any> {
     // Fetch the class from the Cornell API
     const response = await fetch(
-      `${ROSTER_URL}&subject=${subject}&classLevels%5B%5D=${String(
-        number
-      ).charAt(0)}000`
+      `${ROSTER_URL}&subject=${subject}&classLevels%5B%5D=${number
+        .toString()
+        .charAt(0)}000`
     );
     const classes = (await response.json()).data.classes;
 
     // Filter the classes to only include the ones that match the first given digits
     const result = classes.filter((val: any) => {
-      const length = String(number).length;
-      const sub = String(val.catalogNbr).substring(0, length);
-      return sub == String(number);
+      const length = number.toString().length;
+      const sub = val.catalogNbr.toString().substring(0, length);
+      return sub == number.toString();
     });
 
     return SearchService.formatCourses(result);

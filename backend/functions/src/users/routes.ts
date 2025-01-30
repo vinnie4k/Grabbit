@@ -2,6 +2,7 @@ import { Request, Response, Router } from "express";
 import { Section } from "../sections/models";
 import { SectionService } from "../sections/services";
 import { InvalidArgumentError } from "../utils/errors";
+import { SectionStatus } from "../utils/sectionStatus";
 import { default as UserService } from "./services";
 
 export const userRouter = Router();
@@ -32,7 +33,7 @@ userRouter.post(
   "/untrack/:userId",
   async (req: Request, res: Response): Promise<any> => {
     const userId: string = req.params.userId;
-    const sectionId: string = req.body.sectionId;
+    const sectionId: number = req.body.sectionId;
 
     if (!userId || !sectionId) {
       throw new InvalidArgumentError("Invalid arguments supplied");
@@ -53,23 +54,21 @@ userRouter.post(
   async (req: Request, res: Response): Promise<any> => {
     // User
     const userId: string = req.params.userId;
-    const deviceId: string = req.body.deviceId;
 
     // Section
-    const courseId = req.body.courseId;
-    const courseTitle = req.body.courseTitle;
-    const number = req.body.number;
-    const pattern = req.body.pattern;
-    const sectionId = req.body.sectionId;
-    const sectionTitle = req.body.sectionTitle;
-    const status = req.body.status;
-    const subject = req.body.subject;
-    const timeEnd = req.body.timeEnd;
-    const timeStart = req.body.timeStart;
+    const courseId: number = req.body.courseId;
+    const courseTitle: string = req.body.courseTitle;
+    const number: number = req.body.number;
+    const pattern: string = req.body.pattern;
+    const sectionId: number = req.body.sectionId;
+    const sectionTitle: string = req.body.sectionTitle;
+    const status: SectionStatus = req.body.status;
+    const subject: string = req.body.subject;
+    const timeEnd: string = req.body.timeEnd;
+    const timeStart: string = req.body.timeStart;
 
     if (
       !userId ||
-      !deviceId ||
       !courseId ||
       !courseTitle ||
       !number ||

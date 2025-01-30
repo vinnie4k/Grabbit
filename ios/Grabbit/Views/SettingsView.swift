@@ -255,7 +255,7 @@ struct SettingsView: View {
     
     private var creditsView: some View {
         VStack(spacing: 12) {
-            Text("Copyright © 2023")
+            Text("Copyright © 2025")
                 .font(.sfProRounded(size: 14, weight: .light))
 
             HStack(spacing: 0) {

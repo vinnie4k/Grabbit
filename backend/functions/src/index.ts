@@ -24,6 +24,7 @@ export const db = getFirestore();
  * The Express application.
  */
 export const app = express();
+app.use(express.json());
 app.use(cors({ origin: true }));
 app.use(bodyParser.json());
 app.use("/users", userRouter);
@@ -45,7 +46,7 @@ app.use(
 /**
  * The API endpoint.
  */
-export const api = onRequest({ region: "us-east1" }, app);
+exports.api = onRequest({ region: "us-east1" }, app);
 
 /**
  * This scheduled function fetches class roster updates every 60 seconds.

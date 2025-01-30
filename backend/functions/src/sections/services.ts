@@ -23,12 +23,19 @@ export class SectionService {
    * @param ids Array of section IDs to fetch
    * @returns Array of sections
    */
-  static async getSections(ids: string[]): Promise<Section[]> {
+  static async getSections(ids: number[]): Promise<Section[]> {
     if (!ids.length) return [];
 
-    const ref = db.collection(SECTION_COLLECTION).where("id", "in", ids);
-    const snapshot = await ref.get();
-    const sections = snapshot.docs.map((doc) => doc.data() as Section);
+    // Convert ids to strings since document IDs must be strings
+    const docRefs = ids.map((id) =>
+      db.collection(SECTION_COLLECTION).doc(id.toString())
+    );
+
+    // Get all documents in a single batch
+    const docs = await db.getAll(...docRefs);
+    const sections = docs
+      .filter((doc) => doc.exists)
+      .map((doc) => doc.data() as Section);
 
     return sections;
   }
@@ -45,7 +52,7 @@ export class SectionService {
   static async trackSection(section: Section, userId: string): Promise<void> {
     const ref = db
       .collection(SECTION_COLLECTION)
-      .doc(String(section.sectionId));
+      .doc(section.sectionId.toString());
     const doc = await ref.get();
 
     if (doc.exists) {
@@ -67,10 +74,10 @@ export class SectionService {
    * @param userId The user ID to remove.
    */
   static async untrackSection(
-    sectionId: string,
+    sectionId: number,
     userId: string
   ): Promise<void> {
-    const ref = db.collection(SECTION_COLLECTION).doc(sectionId);
+    const ref = db.collection(SECTION_COLLECTION).doc(sectionId.toString());
     const doc = await ref.get();
 
     if (!doc.exists) {
@@ -130,7 +137,7 @@ export class SectionService {
   static async updateSectionStatus(section: Section, newStatus: SectionStatus) {
     const ref = db
       .collection(SECTION_COLLECTION)
-      .doc(String(section.sectionId));
+      .doc(section.sectionId.toString());
     await ref.update({
       status: newStatus,
     });
