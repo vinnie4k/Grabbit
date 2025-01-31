@@ -121,15 +121,6 @@ extension AppDelegate: MessagingDelegate {
     
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
         print("Firebase registration token: \(String(describing: fcmToken))")
-        
-        // Update token on backend
-        if let userId = UserDefaults.standard.object(forKey: "userId") as? String,
-           let fcmToken = fcmToken {
-            Task {
-                await NetworkManager.shared.updateDeviceToken(deviceId: fcmToken, userId: userId)
-            }
-        }
-        
         // Save to UserDefaults
         UserDefaults.standard.setValue(fcmToken ?? "", forKey: "deviceId")
 
