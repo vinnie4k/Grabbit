@@ -13,3 +13,10 @@ export const SECTION_COLLECTION = "sections";
  * The name of the collection for users in the database.
  */
 export const USER_COLLECTION = "users";
+
+/**
+ * The markers for a section status.
+ */
+export const OPEN_MARKER = "O";
+export const CLOSED_MARKER = "C";
+export const WAITLISTED_MARKER = "W";

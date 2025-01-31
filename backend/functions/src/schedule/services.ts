@@ -3,7 +3,12 @@ import { logger } from "firebase-functions/v2";
 import { Section } from "../sections/models";
 import { SectionService } from "../sections/services";
 import UserService from "../users/services";
-import { ROSTER_URL } from "../utils/constants";
+import {
+  CLOSED_MARKER,
+  OPEN_MARKER,
+  ROSTER_URL,
+  WAITLISTED_MARKER,
+} from "../utils/constants";
 import { SectionStatus } from "../utils/sectionStatus";
 
 export class ScheduleService {
@@ -29,9 +34,9 @@ export class ScheduleService {
 
           // Only notify if status is from closed/waitlisted to open
           if (
-            (section.status == SectionStatus.CLOSED ||
-              section.status == SectionStatus.WAITLISTED) &&
-            newStatus == SectionStatus.OPEN
+            (section.status === SectionStatus.CLOSED ||
+              section.status === SectionStatus.WAITLISTED) &&
+            newStatus === SectionStatus.OPEN
           ) {
             // Run notification and database update in parallel
             await Promise.all([
@@ -109,15 +114,19 @@ export class ScheduleService {
       // Find the section
       const fetchedSection = fetchedClass.enrollGroups
         .flatMap((group: any) => group.classSections)
-        .find((section: any) => section.classNbr == section.sectionId);
+        .find(
+          (fetchedSection: any) => fetchedSection.classNbr === section.sectionId
+        );
 
       // Convert string to enum
-      if (fetchedSection.openStatus == SectionStatus.OPEN) {
+      if (fetchedSection.openStatus === OPEN_MARKER) {
         return SectionStatus.OPEN;
-      } else if (fetchedSection.openStatus == SectionStatus.CLOSED) {
+      } else if (fetchedSection.openStatus === CLOSED_MARKER) {
         return SectionStatus.CLOSED;
-      } else {
+      } else if (fetchedSection.openStatus === WAITLISTED_MARKER) {
         return SectionStatus.WAITLISTED;
+      } else {
+        throw new Error("Invalid section status");
       }
     } catch (error) {
       throw error; // Re-throw to handle in the calling function

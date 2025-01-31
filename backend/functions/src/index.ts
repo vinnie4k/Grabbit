@@ -3,7 +3,6 @@ import cors from "cors";
 import express from "express";
 import admin from "firebase-admin";
 import { getFirestore } from "firebase-admin/firestore";
-import { onSchedule } from "firebase-functions/scheduler";
 import { onRequest } from "firebase-functions/v2/https";
 import { errorMiddleware } from "./middleware/errorMiddleware";
 import { ScheduleService } from "./schedule/services";
@@ -48,9 +47,14 @@ app.use(
  */
 exports.api = onRequest({ region: "us-east1" }, app);
 
-/**
- * This scheduled function fetches class roster updates every 60 seconds.
- */
-export const fetchUpdates = onSchedule("* * * * *", async () => {
+exports.fetchManual = onRequest({ region: "us-east1" }, async (req, res) => {
   await ScheduleService.fetchUpdates();
+  res.send("Updates fetched");
 });
+
+// /**
+//  * This scheduled function fetches class roster updates every 60 seconds.
+//  */
+// export const fetchUpdates = onSchedule("* * * * *", async () => {
+//   await ScheduleService.fetchUpdates();
+// });
