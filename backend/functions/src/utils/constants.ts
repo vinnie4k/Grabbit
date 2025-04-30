@@ -2,7 +2,7 @@
  * The URL for the roster of classes.
  */
 export const ROSTER_URL =
-  "https://classes.cornell.edu/api/2.0/search/classes.json?roster=SP25";
+  "https://classes.cornell.edu/api/2.0/search/classes.json?roster=FA25";
 
 /**
  * The name of the collection for courses in the database.
